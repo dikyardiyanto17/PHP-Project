@@ -14,11 +14,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
 
+
         body {
-            background-color: #eee;
+            background-color: #56baed;
             font-family: "Poppins", sans-serif;
             font-weight: 300
         }
@@ -115,9 +117,16 @@
                 <a href="/logout"><button type="submit" class="btn btn-danger" style="margin: 10px auto;">Logout</button></a>
                 <form method="POST" action="/post" enctype="multipart/form-data">
                     @csrf
-                    <label for="exampleFormControlTextarea1" class="form-label" style="margin: 20px auto;">New Post</label>
-                    <textarea name="content" class="form-control" id="exampleFormControlTextarea1" style="width: 500px;" rows="3"></textarea>
-                    <button type="submit" class="btn btn-primary" style="margin: 10px auto;">Post</button>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <label for="exampleFormControlTextarea1" class="form-label" style="margin: 20px auto;">New Post</label>
+                    </div>
+                    <textarea name="content" class="form-control" id="exampleFormControlTextarea1" style="width: 500px;" rows="3" placeholder="Tell About Yourself..."></textarea>
+                    @error('content')
+                    <div class="alert alert-danger">You cannot post empty text</div>
+                    @enderror
+                    <div class="d-flex align-items-center justify-content-center">
+                        <button type="submit" class="btn btn-primary" style="margin: 10px auto;">Post</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -137,6 +146,9 @@
                     @csrf
                     <div class="modal-body">
                         <textarea name="content" class="form-control" id="exampleFormControlTextarea1" style="width: 400px; margin: 0px auto;" rows="3">{{$post->content}}</textarea>
+                        @error('content')
+                        <div class="alert alert-danger">You cannot post empty text</div>
+                        @enderror
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -157,11 +169,11 @@
                             </div>
                         </div>
                         <div class="d-flex flex-row mt-1 ellipsis">
-                            <small class="mr-2">20 mins</small>
+                            <small class="mr-2">{{$post -> created_at -> format('D M Y')}}</small>
                             <!-- data-toggle="modal" data-target="#ModalCreate" -->
                             @if ($post -> user -> id == Auth::user()->id)
-                            <a href="#"><button type="submit" class="btn btn-primary" style="margin: 10px auto;" data-toggle="modal" data-target="#exampleModal{{$post->id}}">Edit</button></a>
-                            <a href="#"><button type="submit" class="btn btn-danger" style="margin: 10px auto;">Delete</button></a>
+                            <a href="#" data-toggle="modal" data-target="#exampleModal{{$post->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                            <a href="/deletepost/{{$post->id}}" style="margin-left: 10px;"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                             @endif
                         </div>
                     </div>
@@ -176,15 +188,48 @@
                         <hr>
                         <div class="comments">
                             @foreach ($post->comments as $com)
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal2{{$com->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Edit Comment</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form method="POST" action="/editcomment/{{$post->id}}" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <textarea name="comment" class="form-control" id="exampleFormControlTextarea1" style="width: 400px; margin: 0px auto;" rows="3">{{$com->comment}}</textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="d-flex flex-row mb-2">
                                 <div class="d-flex flex-column ml-2"> <span class="name">{{$com -> user -> name}}</span> <small class="comment-text">{{$com -> comment}}</small>
-                                    <div class="d-flex flex-row align-items-center status"><small>18 mins</small> </div>
+                                    <div class="d-flex flex-row align-items-center status">
+                                        <small>{{$com -> created_at -> format('D M Y')}}</small>
+                                        @if ($com -> user_id == Auth::user()->id)
+                                        <a href="#" style="margin: auto;" data-toggle="modal" data-target="#exampleModal2{{$com->id}}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                        <a href="/deletecomment/{{$com->id}}" style="margin-left: 20px;"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             @endforeach
                             <div class="comment-input">
-                                <input type="text" class="form-control">
-                                <!-- <div class="fonts"> <button type="button" class="btn btn-primary" style="height: 15px; font-size:7px; margin:auto;"></button> </div> -->
+                                <form method="POST" action="/comment/{{$post-> id}}">
+                                    @csrf
+                                    <input type="text" class="form-control" name="comment" placeholder="Comment..">
+
+                                    <div class="fonts"><button type="submit" style="padding: 0; border:none; background:none;"><i class="fa fa-commenting"></i></button></div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -193,9 +238,15 @@
         </div>
     </div>
     @endforeach
+    <div class="d-flex align-items-center justify-content-center">
+        {{ $data->links() }}
+    </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
+<script>
+</script>
 
 </html>

@@ -22,4 +22,8 @@ Route::post('/register', [LandingPage::class, 'registeruser']);
 Route::get('/logout', [LandingPage::class, 'logout']);
 Route::get('/', [Home::class, 'index']) ->name('home')->middleware('auth');
 Route::post('/editpost/{id}', [Home::class, 'editpost']) ->name('editpost')->middleware('auth');
+Route::post('/editcomment/{id}', [Home::class, 'editcomment']) ->name('editcomment')->middleware('auth');
 Route::post('/post', [Home::class, 'post'])->middleware('auth');
+Route::post('/comment/{id}', [Home::class, 'comment'])->middleware('auth');
+Route::get('/deletecomment/{id}', [Home::class, 'deletecomment'])->middleware('auth');
+Route::get('/deletepost/{id}', [Home::class, 'deletepost'])->middleware('auth');

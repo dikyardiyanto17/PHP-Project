@@ -10,16 +10,26 @@ class LandingPage extends Controller
 {
     public function login(){
         return view('login');
-    }public function loginuser(Request $request){
+    }
+    public function loginuser(Request $request){
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
         if(Auth::attempt($request->only('email', 'password'))){
             return redirect('/');
         }
-        return redirect('/login');
+        return redirect('/login')->with('error', 'Invalid email/password');
     }
     public function register(){
         return view('register');
     }
     public function registeruser(Request $request){
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+        ]);
         User::create([
             'name' => $request ->name,
             'email' => $request ->email,

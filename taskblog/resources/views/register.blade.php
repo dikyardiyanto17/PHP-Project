@@ -247,8 +247,17 @@
             <form method="POST" action="/register" enctype="multipart/form-data">
                 @csrf
                 <input type="text" name="name" placeholder="Name">
+                @error('name')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
                 <input type="text" name="email" placeholder="Email">
+                @error('email')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
                 <input type="password" name="password" placeholder="Password">
+                @error('password')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
                 <input type="submit" value="Register">
             </form>
 

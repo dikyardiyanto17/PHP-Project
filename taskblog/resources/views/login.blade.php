@@ -251,12 +251,22 @@
             <form method="POST" action="/loginuser">
                 @csrf
                 <input type="text" id="login" name="email" placeholder="Email">
+                @error('email')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
                 <input type="password" id="password" name="password" placeholder="Password">
+                @error('password')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
                 <input type="submit" value="Log In">
             </form>
+            @if (Session::has('error'))
+            <div class="alert alert-danger">Invalid email/password</div>
+            @endif
 
         </div>
     </div>
+    <script src="sweetalert2.all.min.js"></script>
 </body>
 
 </html>
