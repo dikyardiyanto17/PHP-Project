@@ -15,11 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/login', [LandingPage::class, 'login']) ->name('login');
+Route::post('/loginuser', [LandingPage::class, 'loginuser'])->name('loginuser');
 Route::get('/register', [LandingPage::class, 'register']) ->name('register');
 Route::post('/register', [LandingPage::class, 'registeruser']);
-Route::get('/home', [Home::class, 'index']) ->name('home');
+Route::get('/logout', [LandingPage::class, 'logout']);
+Route::get('/', [Home::class, 'index']) ->name('home')->middleware('auth');

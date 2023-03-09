@@ -17,11 +17,11 @@ class PostAndComment extends Seeder
     {
         DB::table('posts')->insert([
             'content' => 'Hello World',
-            'customer_id' => '1',
+            'user_id' => '1',
         ]);
         DB::table('comments')->insert([
             'comment' => 'Hello Human',
-            'customer_id' => '1',
+            'user_id' => '1',
             'post_id' => '1',
         ]);
     }

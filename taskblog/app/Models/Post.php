@@ -11,9 +11,9 @@ class Post extends Model
 {
     use HasFactory;
     
-    public function customer(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
     }
     public function comments(): HasMany
     {
