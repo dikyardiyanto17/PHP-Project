@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Customer extends Model
+class Post extends Model
 {
     use HasFactory;
-    protected $guarded = [];
-    public function posts(): HasMany
+    
+    public function customer(): BelongsTo
     {
-        return $this->hasMany(Post::class);
+        return $this->belongsTo(Customer::class);
     }
     public function comments(): HasMany
     {

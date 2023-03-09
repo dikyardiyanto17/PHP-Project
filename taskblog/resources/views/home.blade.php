@@ -97,6 +97,7 @@
                 </div>
             </div>           
         </div>
+        @foreach ($data as $post)
         <div class="container mt-5 mb-5">
             <div class="row d-flex align-items-center justify-content-center">
                 <div class="col-md-6">
@@ -104,34 +105,31 @@
                       <div class="d-flex justify-content-between p-2 px-3">
                         <div class="d-flex flex-row align-items-center">
                             <div class="d-flex flex-column ml-2">
-                                <span class="font-weight-bold">Jeanette Sun</span>
+                                <span class="font-weight-bold">{{$post->customer->name}}</span>
                             </div>
                         </div>
                         <div class="d-flex flex-row mt-1 ellipsis"> <small class="mr-2">20 mins</small> <i class="fa fa-ellipsis-h"></i> </div>
                     </div>
                     <div class="p-2">
-                        <p class="text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        <p class="text-justify">{{$post -> content}}</p>
                         <hr>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex flex-row muted-color"> 
-                                    <span>2 comments</span>
+                                    <span>{{sizeof($post->comments)}} comments</span>
                                 </div>
                             </div>
                         <hr>
                         <div class="comments">
-                            <div class="d-flex flex-row mb-2">
-                                <div class="d-flex flex-column ml-2"> <span class="name">Daniel Frozer</span> <small class="comment-text">I like this alot! thanks alot</small>
-                                    <div class="d-flex flex-row align-items-center status"><small>18 mins</small> </div>
+                            @foreach ($post->comments as $com)
+                                <div class="d-flex flex-row mb-2">
+                                    <div class="d-flex flex-column ml-2"> <span class="name">{{$com -> customer -> name}}</span> <small class="comment-text">{{$com -> comment}}</small>
+                                        <div class="d-flex flex-row align-items-center status"><small>18 mins</small> </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-flex flex-row mb-2">  
-                                <div class="d-flex flex-column ml-2"> <span class="name">Elizabeth goodmen</span> <small class="comment-text">Thanks for sharing!</small>
-                                     <div class="d-flex flex-row align-items-center status"><small>8 mins</small> </div>
-                                  </div>
-                                </div>
+                            @endforeach
                                 <div class="comment-input">
                                     <input type="text" class="form-control">
-                                    <div class="fonts"> <i class="fa fa-camera"></i> </div>
+                                    <!-- <div class="fonts"> <button type="button" class="btn btn-primary" style="height: 15px; font-size:7px; margin:auto;"></button> </div> -->
                                 </div>
                             </div>
                         </div>
@@ -139,5 +137,6 @@
                 </div>
             </div>
         </div>
+        @endforeach
     </body>
 </html>

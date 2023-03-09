@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Post;
 
 class Home extends Controller
 {
     public function index(){
-        return view('home');
+        $data = Post::all();
+        return view('home', compact('data'));
     }
 }
