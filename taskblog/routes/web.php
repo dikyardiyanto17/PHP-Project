@@ -21,3 +21,5 @@ Route::get('/register', [LandingPage::class, 'register']) ->name('register');
 Route::post('/register', [LandingPage::class, 'registeruser']);
 Route::get('/logout', [LandingPage::class, 'logout']);
 Route::get('/', [Home::class, 'index']) ->name('home')->middleware('auth');
+Route::post('/editpost/{id}', [Home::class, 'editpost']) ->name('editpost')->middleware('auth');
+Route::post('/post', [Home::class, 'post'])->middleware('auth');

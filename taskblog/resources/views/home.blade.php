@@ -14,7 +14,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <!-- Styles -->
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
 
@@ -109,21 +108,44 @@
 </head>
 
 <body>
+
     <div class="container">
         <div class="d-flex align-items-center justify-content-center">
             <div class="mb-3">
-                <button type="submit" class="btn btn-danger" style="margin: 10px auto;">Logout</button>
-
-                <form method="POST" action="/register" enctype="multipart/form-data">
+                <a href="/logout"><button type="submit" class="btn btn-danger" style="margin: 10px auto;">Logout</button></a>
+                <form method="POST" action="/post" enctype="multipart/form-data">
                     @csrf
                     <label for="exampleFormControlTextarea1" class="form-label" style="margin: 20px auto;">New Post</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" style="width: 500px;" rows="3"></textarea>
+                    <textarea name="content" class="form-control" id="exampleFormControlTextarea1" style="width: 500px;" rows="3"></textarea>
                     <button type="submit" class="btn btn-primary" style="margin: 10px auto;">Post</button>
                 </form>
             </div>
         </div>
     </div>
     @foreach ($data as $post)
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal{{$post->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="/editpost/{{$post->id}}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <textarea name="content" class="form-control" id="exampleFormControlTextarea1" style="width: 400px; margin: 0px auto;" rows="3">{{$post->content}}</textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="container mt-5 mb-5">
         <div class="row d-flex align-items-center justify-content-center">
             <div class="col-md-6">
@@ -134,7 +156,14 @@
                                 <span class="font-weight-bold">{{$post-> user->name}}</span>
                             </div>
                         </div>
-                        <div class="d-flex flex-row mt-1 ellipsis"> <small class="mr-2">20 mins</small> <i class="fa fa-ellipsis-h"></i> </div>
+                        <div class="d-flex flex-row mt-1 ellipsis">
+                            <small class="mr-2">20 mins</small>
+                            <!-- data-toggle="modal" data-target="#ModalCreate" -->
+                            @if ($post -> user -> id == Auth::user()->id)
+                            <a href="#"><button type="submit" class="btn btn-primary" style="margin: 10px auto;" data-toggle="modal" data-target="#exampleModal{{$post->id}}">Edit</button></a>
+                            <a href="#"><button type="submit" class="btn btn-danger" style="margin: 10px auto;">Delete</button></a>
+                            @endif
+                        </div>
                     </div>
                     <div class="p-2">
                         <p class="text-justify">{{$post -> content}}</p>
@@ -164,6 +193,9 @@
         </div>
     </div>
     @endforeach
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 
 </html>
