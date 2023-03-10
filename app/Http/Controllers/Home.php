@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class Home extends Controller
 {
     public function index(){
-        $data = Post::paginate(3);
+        $data = Post::orderBy('created_at', 'desc')->paginate(3);
         return view('home', compact('data'));
     }
 
